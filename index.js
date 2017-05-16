@@ -28,7 +28,7 @@ app.get('/info', function(request, response) {
 })
 
 app.get('/about', function(request, response) {
-    response.send('Written by Maikel and Cas');
+    response.send('Written by bjorn and mark');
 })
 
 app.all('*', function(request, response) {

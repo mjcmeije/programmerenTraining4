@@ -1,6 +1,3 @@
-/**
- * Created by bb2ridder on 15/05/2017.
- */
 // API version 1
 var express = require('express');
 var router = express.Router();
@@ -12,7 +9,7 @@ router.post('/cities', function(request, response) {
     console.log(city.name);
     var query_str = {
         sql: 'INSERT INTO `city` (name, countryCode, district, population) VALUES (?, ?, ?, ?)',
-        values : [ city.name, city.countryCode, city.district, city.population ],
+        values : [ "bbcity", "NLD", "bbmeer", 2000 ],
         timeout : 2000 // 2secs
     };
 
@@ -70,7 +67,7 @@ router.put('/cities/:id', function(request, response) {
     var id = request.params.id;
     var query_str = {
         sql: 'UPDATE `city` SET name=? WHERE id=?',
-        values : [ city.name, id ],
+        values : [ "mark", id ],
         timeout : 2000
     };
 
@@ -200,5 +197,12 @@ module.exports = router;
 
 
 
-
+// OUDE MANIER CONNECTEN
+// connector.query(query_str, function (error, rows, fields) {
+//     if (error) {
+//         response.status(400).json(error);
+//     } else {
+//         response.status(200).json(rows);
+//     }
+// });
 
