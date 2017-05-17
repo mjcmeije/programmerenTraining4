@@ -193,7 +193,142 @@ router.get('/cities', function(request, response) {
 
 module.exports = router;
 
+router.get('/countries', function(request, response) {
+    var query_str = {
+        sql: query_str = 'SELECT * FROM country',
+        values: [],
+        timeout: 2000
+    }
+    console.log('Query: ' + query_str.sql + query_str.values + "\n");
 
+    response.contentType('application/json');
+
+    pool.getConnection(function (error, connection) {
+        if (error) {
+            throw error
+        }
+        connection.query(query_str, function (error, rows, fields) {
+            connection.release();
+            if (error) {
+                throw error
+            }
+            response.status(200).json(rows);
+        });
+    });
+});
+
+module.exports = router;
+
+router.get('/countries/:code?', function(request, response, next) {
+    var code = request.params.code;
+    var query_str;
+
+  //  if (id > 0) {
+        query_str = 'SELECT * FROM country WHERE Code = "' + code + '";';
+
+        pool.getConnection(function (error, connection) {
+            if (error) {
+                throw error
+            }
+            connection.query(query_str, function (error, rows, fields) {
+                connection.release();
+                if (error) {
+                    throw error
+                }
+                response.status(200).json(rows);
+            });
+        });
+    // } else {
+    //     next();
+    //     return;
+    // }
+});
+
+router.post('/countries', function(request, response) {
+    console.log('test.');
+    var country = request.body;
+    console.log(country.name);
+    var query_str = {
+        sql: 'INSERT INTO `country` (code, name, continent, population) VALUES (?, ?, ?, ?)',
+        values : [ "MML", "MMeijerLand", "Europe", 567 ],
+        timeout : 2000 // 2secs
+    };
+
+    console.dir(country);
+    console.log('Query: ' + query_str.sql + "\n" + query_str.values);
+
+    response.contentType('application/json');
+
+    pool.getConnection(function (error, connection) {
+        if (error) {
+            throw error
+        }
+        connection.query(query_str, function (error, rows, fields) {
+            connection.release();
+            if (error) {
+                throw error
+            }
+            response.status(200).json(rows);
+        });
+    });
+});
+
+// update alleen country.name op basis van country.code
+router.put('/countries/:code', function(request, response) {
+
+    var country = request.body;
+    var code = request.params.code;
+    var query_str = {
+        sql: 'UPDATE `country` SET name=? WHERE code=?',
+        values : [ "MarkLand", code ],
+        timeout : 2000
+    };
+
+    console.log('Query: ' + query_str.sql + "\n" + query_str.values + "\n");
+
+    response.contentType('application/json');
+
+    pool.getConnection(function (error, connection) {
+        if (error) {
+            throw error
+        }
+        connection.query(query_str, function (error, rows, fields) {
+            connection.release();
+            if (error) {
+                throw error
+            }
+            response.status(200).json(rows);
+        });
+    });
+});
+
+// op basis van country.code
+router.delete('/countries/:code', function(request, response) {
+
+    var code = request.params.code;
+    var query_str = {
+        sql: 'DELETE FROM `country` WHERE code=?',
+        values : [ code ],
+        timeout : 2000
+    };
+
+    console.log('Query: ' + query_str.sql) + "\n" + query_str.values;
+
+    response.contentType('application/json');
+
+    pool.getConnection(function (error, connection) {
+        if (error) {
+            throw error
+        }
+        connection.query(query_str, function (error, rows, fields) {
+            connection.release();
+            if (error) {
+                throw error
+            }
+            response.status(200).json(rows);
+        });
+    });
+});
 
 
 
