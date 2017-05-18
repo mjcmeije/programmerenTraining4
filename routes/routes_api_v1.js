@@ -89,30 +89,28 @@ router.put('/cities/:id', function(request, response) {
     });
 });
 
-// betere manier misschien?
 router.get('/cities/search', function(request, response, next) {
-    var countryCode = request.query.countryCode || '';
-    var population = request.query.population || '';
+    var countrycode = request.query.countryCode || '';
+    var name = request.query.name || '';
     var limit = request.query.limit || '';
     var query_str;
 
-    // population filtert op minstens, dus niet precies het getal
-    if (countryCode != '' && population != '') {
+    if (countrycode != '' && name != '') {
         query_str = {
-            sql: query_str = 'SELECT * FROM city WHERE countryCode=? AND population>=?',
-            values: [countryCode, population],
+            sql: query_str = 'SELECT * FROM city WHERE countryCode=? AND name=?',
+            values: [countrycode, name],
             timeout: 2000
         }
-    } else if (countryCode != '') {
+    } else if (countrycode != '') {
         query_str = {
             sql: query_str = 'SELECT * FROM city WHERE countryCode=?',
-            values: [countryCode],
+            values: [countrycode],
             timeout: 2000
         }
-    } else if (population != '') {
+    } else if (name != '') {
         query_str = {
-            sql: query_str = 'SELECT * FROM city WHERE population>=?',
-            values: [population],
+            sql: query_str = 'SELECT * FROM city WHERE name=?',
+            values: [name],
             timeout: 2000
         }
     } else {
@@ -141,6 +139,69 @@ router.get('/cities/search', function(request, response, next) {
         });
     });
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+router.get('/countries/search', function(request, response, next) {
+    var continent = request.query.continent || '';
+//    var name = request.query.name || '';
+    var limit = request.query.limit || '';
+    var query_str;
+
+    if (continent != '') {
+        query_str = {
+            sql: query_str = 'SELECT * FROM country WHERE continent=?',
+            values: [continent],
+            timeout: 2000
+        }
+    } else {
+        next();
+        return;
+    }
+
+    if (limit > 0) {
+        query_str.sql += ' LIMIT ' + limit;
+    }
+
+    console.log('Query: ' + query_str.sql + "\n" + query_str.values + "\n");
+
+    response.contentType('application/json');
+
+    pool.getConnection(function (error, connection) {
+        if (error) {
+            throw error
+        }
+        connection.query(query_str, function (error, rows, fields) {
+            connection.release();
+            if (error) {
+                throw error
+            }
+            response.status(200).json(rows);
+        });
+    });
+});
+
+
+
+
+
+
+
+
+
 
 router.get('/cities/:id?', function(request, response, next) {
     var id = request.params.id;
@@ -329,7 +390,6 @@ router.delete('/countries/:code', function(request, response) {
         });
     });
 });
-
 
 
 // OUDE MANIER CONNECTEN
