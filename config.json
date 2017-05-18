@@ -3,5 +3,6 @@
   "dbHost": "localhost",
   "dbUsername": "root",
   "dbPassword": "",
-  "dbDatabase": "world"
+  "dbDatabase": "world",
+  "secretkey": "bla bla bla"
 }

@@ -220,7 +220,7 @@ router.get('/countries', function(request, response) {
 module.exports = router;
 
 router.get('/countries/:code?', function(request, response, next) {
-    var code = request.params.code;
+    var code = request.params.code || '';
     var query_str;
 
   //  if (id > 0) {
