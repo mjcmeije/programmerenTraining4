@@ -1,6 +1,7 @@
 // API version 1
 var express = require('express');
 var router = express.Router();
+var auth =  require('../auth/authentication');
 var pool = require('../db/db_connector');
 
 router.post('/cities', function(request, response) {
@@ -390,6 +391,40 @@ router.delete('/countries/:code', function(request, response) {
         });
     });
 });
+router.route('/login')
+    //nog uit zoeken hoe hij de username en password vergelijkt uit de database
+
+    .post( function(req, res) {
+
+        //
+        // Get body params or ''
+        //
+        var username = req.query.username || '';
+        var password = req.query.password || '';
+
+        //
+        // Check in datasource for user & password combo.
+        //
+        // Remark: result is an ARRAY (design error?)
+        // 
+
+        result = users.filter(function (user) {
+            if( user.username === username && user.password === password) {
+                return ( user );
+            }
+        });
+
+        // Debug
+        console.log("result: " +  JSON.stringify(result[0]));
+
+        // Generate JWT
+        if( result[0] ) {
+            res.status(200).json({"token" : auth.encodeToken(username), "username" : username});
+        } else {
+            res.status(401).json({"error":"Invalid credentials, bye"})
+        }
+
+    });
 
 
 // OUDE MANIER CONNECTEN
@@ -400,4 +435,8 @@ router.delete('/countries/:code', function(request, response) {
 //         response.status(200).json(rows);
 //     }
 // });
+// bcrypt
+// https://www.npmjs.com/package/bcrypt-nodejs
+//http://codetheory.in/using-the-node-js-bcrypt-module-to-hash-and-safely-store-passwords/
+
 
